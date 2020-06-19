@@ -1,3 +1,13 @@
+/*
+	@NAME : RPGGAME
+	@VERSION: 1.1
+	@DATE : 2020.6
+	@AUTHOR : cstdlib 
+	@STATUE: DEBUG
+	@LOG : FALSE
+*/
+
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include<Windows.h>
@@ -20,9 +30,10 @@ int process = 0;//游戏流程
 7 战斗使用道具界面
 */
 ////////
-//WARNING THIS IS THE TEST MODE
-void TEST(char* name);
+//WARNING THIS IS THE initAllData MODE
+void initAllData(char* name);
 ///////////////////
+
 
 
 int curline = 1;
@@ -97,19 +108,19 @@ struct enemyList
 
 player player1;
 enemy enemy1;
-struct commodityList* shophead;
-struct enemyList* enemyhead;
-struct itemList* itemhead;
-struct bagList* baghaed;
-const int statusbarlen = 20;
-const int blanklen = 2;
-const int roomx = 28;
-const int roomy = 1;
-int roundnum = 0;
-const int roomWidth = 40;
-static const int roomheight = 15;
-char RoomLine[15][30];
-char RoomLine1[15][30];//存储room中每行文字
+struct commodityList* shophead;//商店链表头指针
+struct enemyList* enemyhead;//敌人链表头头指针
+struct itemList* itemhead;//物品链表头指针
+struct bagList* baghaed;//背包链表头指针
+const int statusbarlen = 20;//状态栏长度
+const int blanklen = 2;//空格大小
+const int roomx = 28;//room.x
+const int roomy = 1;//room.y
+int roundnum = 0;//战斗回合数
+const int roomWidth = 40;//room宽度
+static const int roomheight = 15;//room高度
+char RoomLine[15][30];//存储room文字 （通常）
+char RoomLine1[15][30];//存储room中每行文字（战斗系统）
 int curPostion = 1;//当前选中按钮
 char* buttomText[5][4];//存储不同按钮文字
 /* 0 主菜单
@@ -128,16 +139,16 @@ void init();//读取数据
 //============================================
 //=========== 基础工具模板==============
 // 
-void fileencrypt(char* str, char key, int isencrypt);
-void setxy(int x, int y);
-void hidecursor();
-void setcolour(int c);
+void fileencrypt(char* str, char key, int isencrypt);//文件加密解密
+void setxy(int x, int y);//移动光标位置
+void hidecursor();//隐藏光标
+void setcolour(int c);//设置文字颜色
 void cleanroom();//清空room区
 void cleanButton();//清空Buttom区
 void cleanPlayerInformation();//清空角色状态区
 int StringTOnumber(char *str);//去出第一个整数（ID）
-void deleteItem(struct bagList* node);
-void refeshmessage();
+void deleteItem(struct bagList* node);//删除物品 当物品数量<=0
+void refeshmessage();//当room区满的时候刷新滚动
 //char* strtomd5(const char* str, int length);
 //======================================
 
@@ -145,22 +156,24 @@ void refeshmessage();
 //             VIEW层      
 
 //外边框
-void drawRoom();
-void drawOther();
+void drawRoom();//绘制room外边框
+void drawOther();//绘制其他边框
 
 void reDrawText(int perPostion, int curPostion);//重绘按钮文字（变色）
 void drawthePlayInformation();//绘制角色信息
-char* InsertButtomText(int Postion, char* text);
-void drawshopButtom();
+char* InsertButtomText(int Postion, char* text);//修改按钮文字
+void drawshopButtom();//绘制商店下部按钮
 void redrawroom(int control);//room框架内变色
-void drawshopinitRoom();
-void drawbagButtom();
-void drawbattleButtom();
-void drawMainButttom();
-void drawsellButtom();
-void showsell();
-void showbag();
-void showbattlebag();
+void drawshopinitRoom();//绘制商店room界面
+void drawbagButtom();//绘制背包下部按钮
+void drawbattleButtom();//绘制战斗下部按钮
+void drawMainButttom();//绘制主菜单按钮
+void drawsellButtom();//绘制卖出按钮
+void showsell();//显示卖出商品
+void showbag();//显示背包物品
+void showbattlebag();//显示战斗背包
+
+void showshop();//显示商店物品
 ///=================================
 
 //===========用户层=================
@@ -176,31 +189,32 @@ void loadThePlayerInformation();//角色类
 //           control层
 //
 void judgeProcess();//总控制
-void judgebuy();
-void judgeUse();
-void judgesell();
-//           Buttom决策
+void judgebuy();//购买物品逻辑
+void judgeUse();//使用物品逻辑
+void judgeuse1();//战斗中使用物品逻辑
+void judgesell();//卖出物品逻辑
+//           按钮按下Enter决策
 void Directoryjudgement();//主界面
-void DirectoryjudgementShop();
-void DirectoryjudgementShopBuy();
-void Directoryjudgementbag();
-void DirectoryjudgementEnemy();
-void DirectoryjudgementShopsell();
-void DirectoryjudgementBattle();
-void DirectoryjudgementBattleBag();
+void DirectoryjudgementShop();//商店买卖（商店主菜单）
+void DirectoryjudgementShopBuy();//商店买
+void DirectoryjudgementShopsell();//商店卖
+void Directoryjudgementbag();//背包界面
+void DirectoryjudgementEnemy();//敌人选择
+void DirectoryjudgementBattle();//战斗过程
+void DirectoryjudgementBattleBag();//战斗物品使用
 //            战斗决策层
-void judgehuntPlayer();
-void judgehuntEnemy();
-void judgeuse1();
-void huntjudge();
+void huntjudge();//伤害判定（父函数）
+void judgehuntPlayer();//玩家伤害判定（子函数）
+void judgehuntEnemy();//敌人伤害判定（子函数）
+
 //==================================
 
 
 
 //===========商店模板==================
 //         
-void initshop();
-void showshop();
+void initshop();//读取商店文件构造链表（shop.txt）
+
 //
 //==================================
 
@@ -209,25 +223,25 @@ void showshop();
 
 //==========物品模板===================
 //        
-void inititem();
+void inititem();//读取item.txt
 //==================================
 
 
 
 //========= 转换类==================
 //           
-struct  itemList* machItem(int ID);
-char* getItemName(int ID);
-int getItemRange(int ID);
-int getItemEffect(int ID);
-int getmoney(int ID);
+struct  itemList* machItem(int ID);//通过ID找到物品
+char* getItemName(int ID);//获取物品的名称
+int getItemRange(int ID);//物品的效果范围
+int getItemEffect(int ID);//效果种类 
+int getmoney(int ID);//获取物品售价
 //==================================
 
 
 
 //===========背包模块=================
 //          
-void initbag();
+void initbag();//读取bag.txt
 //=====================================
 
 ;
@@ -239,17 +253,17 @@ int recoverRatrHP(int);//比例回血
 
 
 //===========战斗类=================
-void showEnemy();
-void initEnemy();
-void battlePanel();
+void showEnemy();//显示敌人信息
+void initEnemy();//读取enemy.txt
+void battlePanel();//战斗中敌人信息 左下角
 void showEnemyInfomation(enemy purpose);
-void afterBattle();
-void upgrade();
+void afterBattle();//战后处理
+void upgrade();//战后升级
 //==================================
 
 //=============回写类===============
-void Savebag();
-void Saveinfomation();
+void Savebag();//保存背包
+void Saveinfomation();//保存用户信息
 //==================================
 //=========================================
 
@@ -257,12 +271,12 @@ int main()
 {
 
 	//_getche();
-	OutputDebugString(_T("start to thread \n"));
-	GameProtect();
-	SetConsoleTitle(TEXT("RPGgame"));
+	OutputDebugString(_T("start to thread \n"));//调试输出不用管 不参加游戏进程
+	//GameProtect();
+	SetConsoleTitle(TEXT("RPGgame"));//设置窗口标题
+	showLogin();
 
-
-	setxy(0, roomy + roomheight + 4);
+	setxy(0, roomy + roomheight + 4);//结束后光标移动到最后
 	return 0;
 	
 }
@@ -274,6 +288,7 @@ void showLogin()
 	int len = 0, k = 0;
 	user = (char*)malloc(sizeof(char) * 20);
 	password = (char*)malloc(sizeof(char) * 20);
+	
 
 
 	//             绘制登陆窗口
@@ -308,9 +323,8 @@ void showLogin()
 	setxy(roomx - 25 + (+roomWidth + statusbarlen) / 2, roomy + (roomheight + 4) / 2 - 1);
 	//////////////////////////////////////////////////////////
 
-
 	//     密码输入+ *掩码
-	while ((password[k] = _getch()) != 13) {
+	while (k<19&&(password[k] = _getch()) != 13) {
 
 		if (password[k] == 8 && k > 0) {
 			k--;
@@ -329,7 +343,7 @@ void showLogin()
 	password[k] = '\0';//密码结束标识 len标识
 
 	//            验证区域
-	if (validation(user, password) == 1)
+	if (validation(user, password) == 1)//判断用户名密码是否正确 1 T 0 F
 	{
 		init();
 		loadThePlayerInformation();
@@ -394,7 +408,7 @@ void regist()
 
 
 	//     密码输入+ *掩码
-	while ((password[k] = _getch()) != 13) {
+	while (k<19&&(password[k] = _getch()) != 13) {
 
 		if (password[k] == 8 && k > 0) {
 			k--;
@@ -415,14 +429,17 @@ void regist()
 	char name[20];
 	scanf("%s", name);
 	password[k] = '\0';//密码结束标识 len标识
+
+
+	//写入注册的用户名密码
 	FILE* fp = fopen("login.txt","w+");
 	//char* md5 = strtomd5(password, strlen(password));
 	fprintf(fp, "%s %s", user, password);
 	fclose(fp);
-	TEST(name);
+	initAllData(name);//初始化所有数据
 
 
-	init();
+	init();//读取文件
 	loadThePlayerInformation();
 	MainPanel();
 
@@ -454,6 +471,8 @@ void MainPanel()
 	struct tm* p;
 	time(&timep);
 	p = gmtime(&timep);
+	//构建时间结构体
+
 	setxy(roomx + 3, roomy + 1);
 	printf("===Welcome to RPGGame（BATE 1.1v）===");
 
@@ -594,9 +613,12 @@ char* InsertButtomText(int Postion, char* text) {
 	return text;
 }
 void userOperater() {
-	if (_kbhit())
+	
+	//1 2 3 4分别对应左上 右上 左下 右下的按钮 
+
+	if (_kbhit())//判读是否按下按钮
 	{
-		char input = _getch();
+		char input = _getch();//获取按下的值
 		switch (input) {
 
 		case 'a':
@@ -722,6 +744,8 @@ int GameProtect() {
 	//这里不用管
 	OutputDebugString(_T("start to protect……\n"));
 //	EnableDebugPrivilege();
+
+	//设置文件属性为系统文件 隐藏 只读
 	SetFileAttributes(TEXT("bag.txt"), FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN 
 		| FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
 	SetFileAttributes(TEXT("enemy.txt"), FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN 
@@ -732,26 +756,27 @@ int GameProtect() {
 		| FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
 	SetFileAttributes(TEXT("player.txt"), FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN 
 		| FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
-	SetFileAttributes(TEXT("shop.txt"), FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN
+	SetFileAttributes(TEXT("shop.txt、"), FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN
 		| FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
-	if (fopen("item.txt", "r") == NULL || fopen("enemy.txt", "r") == NULL || fopen("shop.txt", "r") == NULL)
+	if (fopen("item.txt", "r") == NULL || fopen("enemy.txt", "r") == NULL || fopen("shop.txt", "r") == NULL)//判断 item.txt enemy.txt shop.txt是否存在
 	{
 		MessageBox(0, _T("错误,游戏基础文件丢失"), _T("错误"), MB_ICONWARNING | MB_OK);
 		exit(-1);
 
 	}
 	
-	if (fopen("player.txt", "r") == NULL && fopen("bag.txt","r")==NULL && fopen("login.txt","r")==NULL)
+	if (fopen("player.txt", "r") == NULL && fopen("bag.txt","r")==NULL && fopen("login.txt","r")==NULL)//判断player.txt bag.txt login.txt是否存在
 	{
 		if (fopen("c:\\key.txt", "r") == NULL)
 		{
-
-			system("wmic diskdrive get serialnumber >>  key1.txt");
-			system("type key1.txt>key.txt");
-			system("copy key.txt c:\\key.txt");
-			system("del key1.txt");
+			//注册流程
+			system("wmic diskdrive get serialnumber >>  key1.txt");//获取硬件识别码并写入 key1.txt
+			system("type key1.txt>key.txt");//将key1.txt文件编码转换为UTF-8 保存到key
+			system("copy key.txt c:\\key.txt");//复制key到c:\key
+			system("del key1.txt");//删除原来的key
+			system("del key.txt");
 			system("cls"); SetFileAttributes(TEXT("c:\\key.txt"),FILE_ATTRIBUTE_NORMAL);
-			fileencrypt("c:\\key.txt", key, 1);
+			fileencrypt("c:\\key.txt", key, 1);//加密文件
 			SetFileAttributes(TEXT("c:\\key.txt"), FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN
 				| FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
 			regist();
@@ -774,11 +799,12 @@ int GameProtect() {
 
 		}
 		else
-		{
+		{   //登陆流程
 			system("del key1.txt");
 			system("wmic diskdrive get serialnumber >\"key1.txt\" ");
 			system("type key1.txt>key.txt");
 			system("del key1.txt");
+			/////验证c:/key文件内容
 			FILE* fp2= fopen("key.txt", "r");
 			system("cls");
 			char source[20];
@@ -799,9 +825,6 @@ int GameProtect() {
 
 
 				}
-			
-			
-
 			fclose(fp);
 			fclose(fp2);
 			fileencrypt("c:\\key.txt", key, 1);
@@ -809,6 +832,7 @@ int GameProtect() {
 				| FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
 			system("del key.txt");
 			system("cls");
+		/////////////////
 			showLogin();
 		}
 
@@ -951,6 +975,7 @@ void judgeUse()
 		setxy(roomx + 3, roomy + 1);
 		printf("使用成功");
 		getchar();
+
 		showbag();
 		drawbagButtom();
 		drawthePlayInformation();
@@ -961,6 +986,7 @@ void judgeUse()
 		setxy(roomx + 3, roomy + 1);
 		printf("使用失败");
 		getchar();
+
 		showbag();
 		drawbagButtom();
 		drawthePlayInformation();
@@ -1713,9 +1739,7 @@ void battleThread()
 		curline++;
 		isinput = 1;
 		fflush(stdin);
-
-
-
+		
 
 
 
@@ -1796,7 +1820,7 @@ void judgehuntPlayer()
 }
 void judgehuntEnemy()
 {
-	int PlayerBloodDeduction = (int)((2 * enemy1.level + 10) / 10 + (enemy1.attack / player1.defence) * enemy1.attack);
+	int PlayerBloodDeduction = (int)((2 * enemy1.level + 10) / 10 + (enemy1.attack / player1.defence) * enemy1.attack);//伤害判定核心
 
 	if (player1.hp - PlayerBloodDeduction > 0)
 	{
@@ -2031,7 +2055,7 @@ void Saveinfomation() {
 
 }
 
-void TEST(char* name)
+void initAllData(char* name)
 {
 	baghaed = (struct bagList*) malloc(sizeof(struct bagList));
 	baghaed->next = NULL;
@@ -2066,3 +2090,10 @@ void fileencrypt(char* str, char key,int isencrypt)
 
 }
 /////////END/////////////////
+
+
+/*
+   未来工程：可视化
+   MFC
+   OpenGL 
+*/
