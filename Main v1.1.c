@@ -955,7 +955,7 @@ void judgeUse()
 	case 2: func = recoverRatrHP; break;
 
 	}
-	if (func(getItemRange(ID)))
+	if (func!=NULL&&func(getItemRange(ID)))
 	{
 		while (node != NULL)
 		{
@@ -966,7 +966,7 @@ void judgeUse()
 			node = node->next;
 
 		}
-		if (node->num <= 0)
+		if (node!=NULL&&node->num <= 0)
 		{
 			deleteItem(node);
 
@@ -1035,7 +1035,7 @@ void judgesell()
 		node = node->next;
 
 	}
-	if (node->num <= 0)
+	if (node!=NULL&&node->num <= 0)
 	{
 		deleteItem(node);
 
@@ -1220,7 +1220,7 @@ int StringTOnumber(char* str)
 		}
 
 	}
-	int j =(int) pow(10, (double)(k - 1));
+	int j =(int) pow(10, (double)(k - (double)1));
 	for (int i = 0; i < k; i++)
 	{
 		aws = aws + (str[i] - '0') * j;
