@@ -18,5 +18,70 @@
     <ClCompile Include="Main v1.1.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="tools.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="effect.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="linkTransform.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="linkop.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="safe.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="draw.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="directoryjudge.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="show.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="battle.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="judge.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="linkTransform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="linkop.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="safe.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="draw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="directoryjudge.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="show.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="judge.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="battle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

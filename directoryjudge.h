@@ -1,0 +1,12 @@
+#pragma once
+#include "judge.h"
+void judgeProcess();
+//           按钮按下Enter决策
+void Directoryjudgement();//主界面
+void DirectoryjudgementShop();//商店买卖（商店主菜单）
+void DirectoryjudgementShopBuy();//商店买
+void DirectoryjudgementShopsell();//商店卖
+void Directoryjudgementbag();//背包界面
+void DirectoryjudgementEnemy();//敌人选择
+void DirectoryjudgementBattle();//战斗过程
+void DirectoryjudgementBattleBag();//战斗物品使用

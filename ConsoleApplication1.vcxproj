@@ -149,7 +149,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="battle.c" />
+    <ClCompile Include="directoryjudge.c" />
+    <ClCompile Include="draw.c" />
+    <ClCompile Include="effect.c" />
+    <ClCompile Include="judge.c" />
+    <ClCompile Include="linkop.c" />
+    <ClCompile Include="linkTransform.c" />
     <ClCompile Include="Main v1.1.c" />
+    <ClCompile Include="safe.c" />
+    <ClCompile Include="show.c" />
+    <ClCompile Include="tools.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="battle.h" />
+    <ClInclude Include="directoryjudge.h" />
+    <ClInclude Include="draw.h" />
+    <ClInclude Include="effect.h" />
+    <ClInclude Include="judge.h" />
+    <ClInclude Include="linkop.h" />
+    <ClInclude Include="linkTransform.h" />
+    <ClInclude Include="safe.h" />
+    <ClInclude Include="show.h" />
+    <ClInclude Include="struct.h" />
+    <ClInclude Include="tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
