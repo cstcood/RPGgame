@@ -161,7 +161,7 @@ void showshop()
 	{
 		num++;
 		if (num == 1) { setcolour(4); }
-		else setcolour(7);
+		else { setcolour(7); }
 		setxy(roomx + 3, roomy + line);
 		sprintf(RoomLine[line - 1], "%d %s %d G", newNode->commodity1.ID, getItemName(newNode->commodity1.ID), newNode->commodity1.money);
 		printf("%s", RoomLine[line - 1]);

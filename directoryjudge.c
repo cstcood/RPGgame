@@ -21,8 +21,8 @@ int roundnum;//战斗回合数
 const int roomWidth;//room宽度
 const int roomheight;//room高度
 int process;
-int  shopnum;
-int enemynum;
+int  shopnum;//商店商品数量
+int enemynum;//敌人数量
 
 void judgeProcess();
 //           按钮按下Enter决策

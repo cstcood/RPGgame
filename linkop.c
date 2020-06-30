@@ -16,6 +16,13 @@ void initbag(char key);
 void Saveinfomation(char key);
 void Savebag(char key);
 void deleteItem(struct bagList* node);
+
+/*
+	函数名：init
+	返回值：NULL
+	参数：NULL
+	作用：总体初始化（读取）各个文件
+*/
 void init()
 {
 
@@ -23,7 +30,16 @@ void init()
 	initshop();
 	inititem();
 	initbag('k');
+	
 }
+
+/*
+	函数名：initEnemy
+	返回值：NULL
+	参数：NULL 
+	全局参数：enemyhead
+	作用：从文件（enemy.txt）读取对应的敌人数据
+*/
 void initEnemy() {
 	FILE* fp;
 	fp = fopen("enemy.txt", "r");
@@ -45,6 +61,14 @@ void initEnemy() {
 
 
 }
+
+/*
+	函数名：initshop
+	返回值：NULL
+	参数：NULL
+	全局参数：shophead
+	作用：从文件（shop.txt）读取对应的商店数据
+*/
 void initshop() {
 	FILE* fp;
 	fp = fopen("shop.txt", "r");
@@ -66,6 +90,14 @@ void initshop() {
 
 
 }
+
+/*
+	函数名：inititem
+	返回值：NULL
+	参数：NULL
+	全局参数：itemhead
+	作用：从文件（item.txt）读取对应的物品数据
+*/
 void inititem() {
 	FILE* fp;
 	fp = fopen("item.txt", "r");
@@ -87,6 +119,14 @@ void inititem() {
 
 
 }
+
+/*
+	函数名：initbag
+	返回值：NULL
+	参数：key
+	全局参数：baghaed
+	作用：通过key解密文件读入背包文件
+*/
 void initbag(char key) {
 
 	FILE* fp;
@@ -129,6 +169,14 @@ void initbag(char key) {
 
 
 }
+
+/*
+	函数名：Saveinfomation
+	返回值：NULL
+	参数：key
+	全局参数：NULL
+	作用：根据key加密数据并将角色信息存入文件
+*/
 void Saveinfomation(char key) {
 	FILE* file;
 	SetFileAttributes(TEXT("player.txt"), FILE_ATTRIBUTE_NORMAL);
@@ -141,6 +189,14 @@ void Saveinfomation(char key) {
 
 
 }
+
+/*
+	函数名：Savebag
+	返回值：NULL
+	参数：key
+	全局参数：baghaed
+	作用：根据key加密数据并将背包信息存入文件
+*/
 void Savebag(char key)
 {
 	SetFileAttributes(TEXT("bag.txt"), FILE_ATTRIBUTE_NORMAL);
@@ -165,6 +221,14 @@ void Savebag(char key)
 	SetFileAttributes(TEXT("bag.txt"), FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN
 		| FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_ARCHIVE);
 }
+
+/*
+	函数名：loadThePlayerInformation
+	返回值：NULL
+	参数：key
+	全局参数：NULL
+	作用：根据key解密数据读取角色信息
+*/
 void loadThePlayerInformation(char key) {
 	FILE* file;
 	SetFileAttributes(TEXT("player.txt"), FILE_ATTRIBUTE_NORMAL);
@@ -185,6 +249,14 @@ void loadThePlayerInformation(char key) {
 
 
 }
+
+/*
+	函数名：deleteItem
+	返回值：NULL
+	参数：struct bagList* node
+	全局参数：NULL
+	作用：删除当前节点
+*/
 void deleteItem(struct bagList* node)
 {
 	struct bagList* newNode;

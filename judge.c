@@ -46,8 +46,6 @@ void judgeuse1();
 void judgeUse()
 {
 	char str[100];
-	//int exist = 0;
-	//int money = 0;
 	strcpy(str, RoomLine[curline]);
 	int ID = StringTOnumber(str);
 	struct bagList* node = baghaed;
@@ -107,8 +105,6 @@ void judgeUse()
 void judgesell()
 {
 	char str[100];
-	//int exist = 0;
-	//int money = 0;
 	strcpy(str, RoomLine[curline]);
 	int ID = StringTOnumber(str);
 	struct bagList* node = baghaed;

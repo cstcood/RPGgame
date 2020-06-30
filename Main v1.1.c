@@ -17,7 +17,6 @@
 #include<time.h>
 #include<math.h>
 #include"tools.h"
-//#include <openssl/md5.h>//不用管这个库
 #include<tchar.h>
 #include"effect.h"
 #include"struct.h"
@@ -29,8 +28,9 @@
 #include"show.h"
 #include"battle.h"
 #include"judge.h"
-int process = 0;//游戏流程
+
 #pragma warning(disable:4996)
+extern int process = 0;//游戏流程
 /*
 0 主界面
 1 商店选择
@@ -41,6 +41,13 @@ int process = 0;//游戏流程
 6 战斗界面
 7 战斗使用道具界面
 */
+int curline;//主要操作信息框框光标
+int curline1;//战斗界面专用信息
+int bagnum;//背包物品数量
+int isinput;//战斗阶段输入响应标志
+int  shopnum;//商店的物品数量
+int enemynum;//敌人数量
+
 ////////
 //WARNING THIS IS THE initAllData MODE
 void initAllData(char* name);
@@ -50,22 +57,22 @@ void userOperater();
 
 
 
-player player1;
-enemy enemy1;
+player player1;//玩家信息
+enemy enemy1;//敌人信息
 struct commodityList* shophead;//商店链表头指针
 struct enemyList* enemyhead;//敌人链表头头指针
 struct itemList* itemhead;//物品链表头指针
 struct bagList* baghaed;//背包链表头指针
 const int statusbarlen;//状态栏长度
- const int blanklen;//空格大小
- const int roomx; //room.x
- const int roomy;//room.y
+const int blanklen;//空格大小
+const int roomx; //room.x
+const int roomy;//room.y
 int roundnum;//战斗回合数
- const int roomWidth ;//room宽度
- const int roomheight;//room高度
- char RoomLine[15][30];//存储room文字 （通常）
- char RoomLine1[15][30];//存储room中每行文字（战斗系统）
- int curPostion ;//当前选中按钮
+const int roomWidth ;//room宽度
+const int roomheight;//room高度
+char RoomLine[15][30];//存储room文字 （通常）
+char RoomLine1[15][30];//存储room中每行文字（战斗系统）
+int curPostion ;//当前选中按钮
 char* buttomText[5][4];//存储不同按钮文字
 /* 0 主菜单
  * 1  通用 （上 下 返回 确认）
@@ -77,39 +84,22 @@ char* buttomText[5][4];//存储不同按钮文字
 
 void Login();//入口登录
 void MainPanel();
-
-
-//============================================
-//=========== 基础工具模板==============
-// 
-
-
-
-
-//======================================
-
-
-//===========用户层=================
-
-//==================================
-
-
-
 int validation(char*, char*);//登陆Control层
-//void loadThePlayerInformation('k');//角色类
 
 
-
+/*
+	函数名：main
+	返回值：NULL
+	参数：NULL
+	作用：程序入口函数
+*/
 int main()
 {
 
-	//_getche();
-	OutputDebugString(_T("start to thread \n"));//调试输出不用管 不参加游戏进程
+	OutputDebugString(_T("start to thread \n"));
 	GameProtect('k');
-	SetConsoleTitle(TEXT("RPGgame"));//设置窗口标题
-	//Login();
-
-	setxy(0, roomy + roomheight + 4);//结束后光标移动到最后
+	SetConsoleTitle(TEXT("RPGgame"));
+	setxy(0, roomy + roomheight + 4);
 	return 0;
 	
 }
@@ -122,10 +112,6 @@ void enterInfomation(char *user,char *password)
 	len = scanf("%s", user);
 	getchar();//清除缓冲区
 	setxy(roomx - 25 + (+roomWidth + statusbarlen) / 2, roomy + (roomheight + 4) / 2 - 1);
-
-	//////////////////////////////////////////////////////////
-
-	//     密码输入+ *掩码
 	while (k < 19 && (password[k] = _getch()) != 13) {
 
 		if (password[k] == 8 && k > 0) {
@@ -180,7 +166,6 @@ void regist()
 
 	//写入注册的用户名密码
 	FILE* fp = fopen("login.txt","w+");
-	//char* md5 = strtomd5(password, strlen(password));
 	fprintf(fp, "%s %s", user, password);
 	fclose(fp);
 	initAllData(name);//初始化所有数据
@@ -214,8 +199,18 @@ void MainPanel()
 	setxy(roomx + 3, roomy + 1);
 	printf("===Welcome to RPGGame（BATE 1.1v）===");
 
+	char debugs[256];
+	sprintf(debugs, "itemhead: %p  \nshophead: %p \nbaghead: %p \nenemyhead: %p \n ", itemhead, shophead, baghaed, enemyhead);
+	OutputDebugStringA(debugs);
 	while (1)
 	{
+		 static int temp=-1;
+		if (process != temp) {
+			sprintf(debugs, "process: %d \n", process);
+			OutputDebugStringA(debugs);
+			temp = process;
+		}
+
 
 		userOperater();
 		Sleep(100);
@@ -255,24 +250,41 @@ void userOperater() {
 		switch (input) {
 
 		case 'a':
-			if (curPostion == 2) { curPostion = 1; reDrawText(2, 1); }
-			if (curPostion == 4) { curPostion = 3; reDrawText(4, 3); }
+			if (curPostion == 2) { 
+				curPostion = 1;
+				reDrawText(2, 1); }
+			if (curPostion == 4) {
+				curPostion = 3;
+				reDrawText(4, 3); }
 			break;
 
 		case 'w':
-			if (curPostion == 3) { curPostion = 1; reDrawText(3, 1); }
-			if (curPostion == 4) { curPostion = 2; reDrawText(4, 2); }
+			if (curPostion == 3) {
+				curPostion = 1;
+				reDrawText(3, 1); }
+			if (curPostion == 4) {
+				curPostion = 2;
+				reDrawText(4, 2); }
 			break;
 		case 'd':
-			if (curPostion == 1) { curPostion = 2; reDrawText(1, 2); }
-			if (curPostion == 3) { curPostion = 4; reDrawText(3, 4); }
+			if (curPostion == 1) { 
+				curPostion = 2; 
+				reDrawText(1, 2); }
+			if (curPostion == 3) { 
+				curPostion = 4; 
+				reDrawText(3, 4); }
 			break;
 		case 's':
-			if (curPostion == 1) { curPostion = 3; reDrawText(1, 3); }
-			if (curPostion == 2) { curPostion = 4; reDrawText(2, 4); }
+			if (curPostion == 1) {
+				curPostion = 3;
+				reDrawText(1, 3); }
+			if (curPostion == 2) { 
+				curPostion = 4;
+				reDrawText(2, 4); }
 			break;
 		case 13: judgeProcess();
 			break;
+		default: break;
 		}
 
 	}
@@ -291,7 +303,6 @@ int validation(char* user, char* password) {
 	char Filepassword[40]="\0";
 	file = fopen("login.txt", "r");
 	fscanf(file, "%s %s", Fileuser, Filepassword);
-	//char* md5 = strtomd5(password, strlen(password));
 	if (strcmp(Fileuser, user) != 0 || strcmp(Filepassword,password) != 0)
 		return 0;
 
@@ -318,12 +329,3 @@ void initAllData(char* name)
 
 }
 
-
-/////////END/////////////////
-
-
-/*
-   未来工程：可视化
-   MFC
-   OpenGL 
-*/

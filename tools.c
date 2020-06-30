@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <stdio.h>
+#include <tchar.h>
 #pragma warning(disable:4996)
 void setxy(int x, int y);//移动光标位置
 void hidecursor();//隐藏光标
@@ -62,3 +63,4 @@ int StringTOnumber(char* str)
 	return aws;
 
 }
+
